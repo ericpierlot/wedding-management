@@ -1,9 +1,21 @@
 import { Button, Group, NumberInput, TextInput, Modal } from "@mantine/core";
 import { FormEvent, useState } from "react";
 import { FaPiggyBank } from "react-icons/fa";
+import { useMutation, useQueryClient } from "react-query";
 import { supabase } from "../../../services/supabaseClient";
+import { Booking } from "../Management";
+
+type BookingPost = Omit<Booking, "created_at" | "id" | "attachFile_url">;
+
+const supabasePostBooking = async (fields: BookingPost) => {
+  await supabase.from("Booking").insert(fields);
+};
 
 const ManagementForm = () => {
+  const { mutateAsync } = useMutation(supabasePostBooking, {
+    mutationKey: ["booking"],
+  });
+  const queryClient = useQueryClient();
   const [collapsed, setCollapsed] = useState(false);
   const [price, setPrice] = useState(0);
   const [deposit, setDeposit] = useState(0);
@@ -13,8 +25,18 @@ const ManagementForm = () => {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const fields = Object.fromEntries(formData);
-    await supabase.from("Booking").insert(fields);
+    const fields = {
+      value: formData.get("value") as string,
+      price,
+      deposit,
+    };
+
+    mutateAsync(fields, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["booking"]);
+        toggleCollapse();
+      },
+    });
   };
 
   const onChangePrice = (value: number) => {
