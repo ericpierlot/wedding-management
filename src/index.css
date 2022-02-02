@@ -1,0 +1,13 @@
+@font-face {
+  font-family: "Montserrat";
+  src: local("Montserrat"),
+    url("./fonts/Montserrat-VariableFont.ttf") format("truetype");
+}
+
+* {
+  font-family: "Montserrat";
+}
+
+/* .table tbody tr:hover {
+    background-color: red !important;
+  } */
