@@ -11,7 +11,7 @@ export type Booking = {
   value: string;
   price: number;
   deposit: number;
-  attachFile_url: string;
+  attachFile_url: string | null;
 };
 
 export const fetchData = async () => {

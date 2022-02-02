@@ -2,7 +2,9 @@ import { useMantineTheme, Text } from "@mantine/core";
 import { useQuery } from "react-query";
 import { Route, Routes } from "react-router-dom";
 import Guests from "../../pages/Guests";
+import ManagementDetails from "../../pages/Management/Details";
 import Management, { fetchData } from "../../pages/Management/Management";
+import { formattedNumber } from "../../utils";
 import Navigation from "../Navigation";
 import ToggleScheme from "../ToggleScheme";
 
@@ -23,21 +25,21 @@ const HeaderApp = () => {
           theme.colorScheme === "dark"
             ? theme.colors.dark[8]
             : theme.colors.red[6],
-        padding: 12,
+        height: 80,
+        padding: "0 12px",
       }}
     >
       <Navigation />
       <div>
-        <Text component="span" color="lime" weight="bold">
-          ฿ {totalRemaining}
-        </Text>{" "}
-        /{" "}
+        <Text component="div" color="lime" weight="bold">
+          {formattedNumber(totalRemaining)}
+        </Text>
         <Text
           component="span"
           weight="bold"
           color={theme.colorScheme === "dark" ? "red" : "dark"}
         >
-          {total}
+          {formattedNumber(total)}
         </Text>
       </div>
       <ToggleScheme />
@@ -49,6 +51,7 @@ const Router = () => {
     <Routes>
       <Route path="/" element={<Management />} />
       <Route path="/guests" element={<Guests />} />
+      <Route path="/booking/:id" element={<ManagementDetails />} />
     </Routes>
   );
 };

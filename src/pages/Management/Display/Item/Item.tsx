@@ -1,68 +1,71 @@
-import { Box, Divider, Group, Text } from "@mantine/core";
-import type { ModalEditingProps } from "../ModalEditing";
+import { Paper, Group, Text } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import { formattedNumber } from "../../../../utils";
+import { Booking } from "../../Management";
 import { useStyles } from "./Item.style";
 
-interface ItemProps {
-  id: number;
-  name: string;
-  price: number;
-  deposit: number;
-  onEdit: (props: ModalEditingProps) => void;
-}
-const Item = ({ id, name, price, deposit, onEdit }: ItemProps) => {
+type BookingDisplay = Omit<Booking, "attachFile_url" | "created_at">;
+
+const Item = ({ id, value, price, deposit }: BookingDisplay) => {
   const { classes } = useStyles();
+  const navigate = useNavigate();
+
+  const goToDetails = (bookingId: number) => {
+    navigate(`/booking/${bookingId}`);
+  };
 
   return (
-    <>
-      <Box
-        className={classes.main}
-        onClick={() => onEdit({ id, value: name, price, deposit })}
-      >
-        <Group direction="column" grow>
-          <div style={{ fontWeight: "bold" }}>{name}</div>
+    <Paper
+      shadow="xl"
+      padding={12}
+      withBorder
+      className={classes.main}
+      //     onClick={() => onEdit({ id, value: name, price, deposit })}
+      onClick={() => goToDetails(id)}
+    >
+      <Group direction="column" grow>
+        <div style={{ fontWeight: "bold" }}>{value}</div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "column",
+            flexWrap: "wrap",
+          }}
+        >
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
-              flexDirection: "column",
               flexWrap: "wrap",
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-              }}
-            >
-              <Text style={{ minWidth: 100 }}>Total</Text>
-              <Text>฿ {price}</Text>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-              }}
-            >
-              <Text style={{ minWidth: 100 }}>Deposit</Text>
-              <Text color="lime">-฿ {deposit}</Text>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-              }}
-            >
-              <Text style={{ minWidth: 100 }}>Remaining</Text>
-              <Text color="red">+฿ {price - deposit}</Text>
-            </div>
+            <Text style={{ minWidth: 100 }}>Total</Text>
+            <Text>{formattedNumber(price)}</Text>
           </div>
-        </Group>
-      </Box>
-      <Divider />
-    </>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+            }}
+          >
+            <Text style={{ minWidth: 100 }}>Deposit</Text>
+            <Text color="lime">-{formattedNumber(deposit)}</Text>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+            }}
+          >
+            <Text style={{ minWidth: 100 }}>Remaining</Text>
+            <Text color="red">+{formattedNumber(price - deposit)}</Text>
+          </div>
+        </div>
+      </Group>
+    </Paper>
   );
 };
 

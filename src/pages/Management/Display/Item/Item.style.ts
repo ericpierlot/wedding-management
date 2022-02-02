@@ -2,7 +2,7 @@ import { createStyles } from "@mantine/core";
 
 export const useStyles = createStyles((theme) => ({
   main: {
-    padding: "12px",
+    margin: "0 12px",
     "&:hover": {
       cursor: "pointer",
       backgroundColor:
