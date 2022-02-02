@@ -67,18 +67,20 @@ const ManagementForm = () => {
               label="Price"
               required
               name="price"
-              placeholder="0"
+              icon="฿"
               value={price}
               onChange={onChangePrice}
+              step={100}
             />
             <NumberInput
               icon={<FaPiggyBank />}
               label="Deposit"
               name="deposit"
-              placeholder="0"
               value={deposit}
               max={price}
               onChange={onChangeDeposit}
+              min={0}
+              step={100}
             />
             <Button type="submit" color="red">
               Add
