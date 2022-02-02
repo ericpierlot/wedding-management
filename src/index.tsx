@@ -6,15 +6,14 @@ import { BrowserRouter } from "react-router-dom";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 const rootElement = document.getElementById("root");
-if (!rootElement) throw new Error("Root element not found");
-const root = ReactDOM.createRoot(rootElement);
 
-root.render(
+ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
+  rootElement
 );
 
 serviceWorkerRegistration.register();

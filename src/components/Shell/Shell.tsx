@@ -1,73 +1,10 @@
-import {
-  ActionIcon,
-  Divider,
-  Group,
-  useMantineTheme,
-  Text,
-} from "@mantine/core";
-import { MdAssessment, MdGroups } from "react-icons/md";
-import { useQuery, useQueryClient } from "react-query";
-import { Link, Route, Routes } from "react-router-dom";
+import { useMantineTheme, Text } from "@mantine/core";
+import { useQuery } from "react-query";
+import { Route, Routes } from "react-router-dom";
 import Guests from "../../pages/Guests";
-import Management, {
-  Booking,
-  fetchData,
-} from "../../pages/Management/Management";
+import Management, { fetchData } from "../../pages/Management/Management";
 import Navigation from "../Navigation";
 import ToggleScheme from "../ToggleScheme";
-
-const NavigationApp = () => {
-  return (
-    <nav
-      style={{
-        display: "flex",
-        justifyContent: "space-evenly",
-        height: 80,
-      }}
-    >
-      <Group>
-        <Link
-          style={{
-            width: "100%",
-            textAlign: "center",
-            height: "100%",
-            border: "none",
-          }}
-          to="/"
-        >
-          <ActionIcon
-            color="red"
-            variant="transparent"
-            style={{ width: 80, height: 80 }}
-          >
-            <MdAssessment size={80} />
-          </ActionIcon>
-        </Link>
-      </Group>
-
-      <Divider orientation="vertical" />
-      <Group>
-        <Link
-          style={{
-            width: "100%",
-            textAlign: "center",
-            height: "100%",
-            border: "none",
-          }}
-          to="/guests"
-        >
-          <ActionIcon
-            color="red"
-            variant="transparent"
-            style={{ width: 80, height: 80 }}
-          >
-            <MdGroups size={80} />
-          </ActionIcon>
-        </Link>
-      </Group>
-    </nav>
-  );
-};
 
 const HeaderApp = () => {
   const { data } = useQuery(["booking"], fetchData);
@@ -129,10 +66,6 @@ const Shell = () => {
       <main style={{ flex: 1 }}>
         <Router />
       </main>
-      {/* <header>
-        <Divider orientation="horizontal" />
-        <NavigationApp />
-      </header> */}
     </div>
   );
 };

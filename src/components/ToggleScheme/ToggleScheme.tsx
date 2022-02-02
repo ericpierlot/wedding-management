@@ -1,5 +1,4 @@
 import { ActionIcon, useMantineColorScheme } from "@mantine/core";
-import { FaMoon, FaSun } from "react-icons/fa";
 import { RiMoonClearLine, RiSunLine } from "react-icons/ri";
 
 const ToggleScheme = () => {
