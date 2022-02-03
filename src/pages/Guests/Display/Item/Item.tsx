@@ -14,7 +14,7 @@ const Guest = ({ id, lastname, firstname, responsableid }: GuestInterface) => {
       <Group position="apart">
         <div>
           <Text component="span">{firstname}</Text>
-          <Text component="span"> {lastname.charAt(0).toUpperCase()}.</Text>
+          <Text component="span"> {lastname}</Text>
           <Text component="span" hidden>
             {responsableid}
           </Text>
