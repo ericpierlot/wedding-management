@@ -1,3 +1,5 @@
+import { GuestInterface } from "../pages/Guests/Display/Item/Item";
+import { Admin } from "../pages/Guests/Guests";
 import { supabase } from "../services/supabaseClient";
 
 export const formattedNumber = (number: number) =>
@@ -28,4 +30,28 @@ export const uploadImageToSupabaseStorage = async (fileObject: File) => {
   } catch (error: any) {
     throw new Error("Error uploading");
   }
+};
+
+export const getUser = () => {
+  return supabase.auth.user();
+};
+
+export const getLengthOfGuests = async () => {
+  const { count } = await supabase
+    .from<GuestInterface>("Guest")
+    .select("*", { count: "exact" });
+  return count;
+};
+
+export const usePermission = () => {
+  const user = getUser();
+  if (!user) {
+    return false;
+  }
+
+  if (user.id === Admin.ERIC || user.id === Admin.NATTANICHA) {
+    return true;
+  }
+
+  return false;
 };

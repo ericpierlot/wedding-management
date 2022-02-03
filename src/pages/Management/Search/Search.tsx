@@ -1,27 +1,16 @@
 import { Autocomplete, AutocompleteItem, Text } from "@mantine/core";
 import { FaSearch } from "react-icons/fa";
 import { useState } from "react";
-import { useModals } from "@mantine/modals";
-import ModalEditing from "../Display/ModalEditing";
 import { Booking } from "../Management";
+import { useNavigate } from "react-router-dom";
 
 const Search = ({ data }: { data: Booking[] }) => {
-  const modals = useModals();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
   const onSubmit = (item: AutocompleteItem) => {
-    const { id, deposit, price, value } = item;
-
-    modals.openModal({
-      id: "edit-modal",
-      children: (
-        <ModalEditing id={id} deposit={deposit} value={value} price={price} />
-      ),
-      onClose: () => {
-        setSearch("");
-        modals.closeModal("edit-modal");
-      },
-    });
+    const { id } = item;
+    navigate(`/booking/${id}`);
   };
 
   return (

@@ -10,7 +10,11 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { FaPiggyBank } from "react-icons/fa";
 import { useMutation, useQueryClient } from "react-query";
 import { supabase } from "../../../services/supabaseClient";
-import { uploadImageToSupabaseStorage } from "../../../utils";
+import {
+  getUser,
+  uploadImageToSupabaseStorage,
+  usePermission,
+} from "../../../utils";
 import { Booking } from "../Management";
 
 type BookingPost = Omit<Booking, "created_at" | "id">;
@@ -24,6 +28,7 @@ export const removeAttachFileFromStorage = async (path: string) => {
 };
 
 const ManagementForm = () => {
+  const hasAccess = usePermission();
   const { mutateAsync, isLoading } = useMutation(supabasePostBooking, {
     mutationKey: ["booking"],
   });
@@ -58,12 +63,18 @@ const ManagementForm = () => {
       await mutateAsync(fields, {
         onSuccess: () => {
           queryClient.invalidateQueries(["booking"]);
-          toggleCollapse();
         },
         onError: (error) => {
           if (attachFile_url) {
             removeAttachFileFromStorage(attachFile_url);
           }
+        },
+        onSettled: () => {
+          const user = getUser()?.email;
+          if (!user) {
+            return;
+          }
+          toggleCollapse();
         },
       });
     } catch (error: any) {
@@ -91,7 +102,13 @@ const ManagementForm = () => {
 
   return (
     <div style={{ padding: 12 }}>
-      <Button onClick={toggleCollapse} color="red" variant="filled" fullWidth>
+      <Button
+        onClick={toggleCollapse}
+        color="red"
+        variant="filled"
+        fullWidth
+        disabled={!hasAccess}
+      >
         Add
       </Button>
       <Modal opened={collapsed} onClose={toggleCollapse} title="">
@@ -105,7 +122,7 @@ const ManagementForm = () => {
               data-autofocus
             />
             <NumberInput
-              type="number"
+              type="tel"
               label="Price"
               required
               name="price"

@@ -1,11 +1,27 @@
 import { Menu, Divider, ThemeIcon } from "@mantine/core";
 import { FiSettings, FiPieChart } from "react-icons/fi";
-import { MdLogout } from "react-icons/md";
+import { MdLogin, MdLogout } from "react-icons/md";
 import { IoIosPeople } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { supabase } from "../../services/supabaseClient";
+import { getUser } from "../../utils";
 
 const Navigation = () => {
+  const user = getUser();
+  const navigate = useNavigate();
+  async function signInWithGoogle() {
+    const { user, session, error } = await supabase.auth.signIn({
+      provider: "google",
+    });
+    console.log(user, session, error);
+  }
+
+  async function signout() {
+    const { error } = await supabase.auth.signOut();
+    navigate("/");
+  }
+
   return (
     <Menu
       control={
@@ -21,11 +37,20 @@ const Navigation = () => {
         Guests
       </Menu.Item>
       <Divider />
-      <Menu.Label>Application</Menu.Label>
+      <Menu.Label>
+        {user ? `Welcome ${user.email}` : "Let's login !"}
+      </Menu.Label>
       <Menu.Item icon={<FiSettings />}>Settings</Menu.Item>
-      <Menu.Item color="red" icon={<MdLogout />}>
-        Logout
-      </Menu.Item>
+      {!user?.id && (
+        <Menu.Item color="green" icon={<MdLogin />} onClick={signInWithGoogle}>
+          Login
+        </Menu.Item>
+      )}
+      {user?.id && (
+        <Menu.Item color="red" icon={<MdLogout />} onClick={signout}>
+          Logout
+        </Menu.Item>
+      )}
     </Menu>
   );
 };

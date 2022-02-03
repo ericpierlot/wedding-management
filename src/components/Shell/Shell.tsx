@@ -1,15 +1,17 @@
 import { useMantineTheme, Text } from "@mantine/core";
 import { useQuery } from "react-query";
 import { Route, Routes } from "react-router-dom";
-import Guests from "../../pages/Guests";
+import Guests from "../../pages/Guests/Guests";
 import ManagementDetails from "../../pages/Management/Details";
 import Management, { fetchData } from "../../pages/Management/Management";
-import { formattedNumber } from "../../utils";
+import { formattedNumber, getLengthOfGuests } from "../../utils";
 import Navigation from "../Navigation";
 import ToggleScheme from "../ToggleScheme";
 
 const HeaderApp = () => {
   const { data } = useQuery(["booking"], fetchData);
+  const { data: nbGuests } = useQuery(["guests"], getLengthOfGuests);
+  console.log(nbGuests);
   const total = data?.reduce((acc, curr) => acc + curr.price, 0) ?? 0;
   const totalRemaining =
     data?.reduce((acc, curr) => acc + curr.deposit, 0) ?? 0;
@@ -30,6 +32,9 @@ const HeaderApp = () => {
       }}
     >
       <Navigation />
+      <Text color="teal" weight="bold">
+        {nbGuests} {nbGuests && nbGuests > 1 ? "guests" : "guest"}
+      </Text>
       <div>
         <Text component="div" color="lime" weight="bold">
           {formattedNumber(totalRemaining)}

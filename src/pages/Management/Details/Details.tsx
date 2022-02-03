@@ -14,8 +14,9 @@ import { MdDelete } from "react-icons/md";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../../../services/supabaseClient";
-import { formattedNumber } from "../../../utils";
+import { formattedNumber, usePermission } from "../../../utils";
 import ModalEditing, { ModalEditingProps } from "../Display/ModalEditing";
+import { removeAttachFileFromStorage } from "../Form/ManagementForm";
 import { Booking } from "../Management";
 
 const getBookingId = async (id: number | undefined) => {
@@ -28,8 +29,13 @@ const getBookingId = async (id: number | undefined) => {
   return data[0];
 };
 
-const deleteBookingId = async (id: number) => {
+const deleteBookingId = async (data: Booking) => {
+  const { id, attachFile_url } = data;
   try {
+    console.log("attachFile_url", attachFile_url);
+    if (attachFile_url) {
+      await removeAttachFileFromStorage(attachFile_url);
+    }
     await supabase.from<Booking>("Booking").delete().match({ id });
   } catch (error) {
     throw new Error("Error deleting booking");
@@ -52,6 +58,7 @@ async function downloadImage(path: string) {
 }
 
 const ManagementDetails = () => {
+  const hasAccess = usePermission();
   const { id } = useParams();
   const queryClient = useQueryClient();
   const modals = useModals();
@@ -59,10 +66,10 @@ const ManagementDetails = () => {
   const navigate = useNavigate();
   const [urlFile, setUrlFile] = useState<string | undefined>("");
   const { mutateAsync: deleteBooking } = useMutation(
-    (idToDelete: number) => deleteBookingId(idToDelete),
+    (bookingToDelete: Booking) => deleteBookingId(bookingToDelete),
     {
       mutationKey: ["booking", id],
-      onSuccess: () => {
+      onSuccess: async () => {
         queryClient.invalidateQueries(["booking"]);
       },
     }
@@ -104,8 +111,9 @@ const ManagementDetails = () => {
     });
   };
 
-  const handleDeleteBooking = async (bookingId: number) => {
-    await deleteBooking(bookingId, {
+  const handleDeleteBooking = async (booking: Booking | null | undefined) => {
+    if (!booking) return;
+    await deleteBooking(booking, {
       onSuccess: () => {
         modals.closeModal("delete-booking");
         navigate("/");
@@ -133,7 +141,7 @@ const ManagementDetails = () => {
             <Button
               color="red"
               onClick={() => {
-                handleDeleteBooking(Number(id));
+                handleDeleteBooking(data);
               }}
             >
               Delete
@@ -163,6 +171,7 @@ const ManagementDetails = () => {
                 color="red"
                 variant="light"
                 onClick={() => data && handleOpenDeleteModal()}
+                disabled={!hasAccess}
               >
                 <MdDelete />
               </ActionIcon>
@@ -178,6 +187,7 @@ const ManagementDetails = () => {
             <Button
               color="red"
               onClick={() => data && openEditModal({ ...data })}
+              disabled={!hasAccess}
             >
               Edit
             </Button>
