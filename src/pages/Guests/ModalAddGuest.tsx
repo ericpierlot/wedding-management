@@ -4,13 +4,13 @@ import { FormEvent } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { supabase } from "../../services/supabaseClient";
 import { getUser } from "../../utils";
+import { GuestInterface } from "./Display/Item/Item";
 import { Admin } from "./Guests";
 
-type AddGuestFields = {
-  firstName: string;
-  lastName: string;
-  responsableId: string;
-};
+type AddGuestFields = Pick<
+  GuestInterface,
+  "firstname" | "lastname" | "responsableid"
+>;
 
 const supabasePostGuest = async (fields: AddGuestFields) => {
   await supabase.from("Guest").insert(fields);
@@ -33,9 +33,9 @@ const ModalAddGuest = () => {
       const formData = new FormData(e.currentTarget);
 
       const fields = {
-        firstName: formData.get("firstName") as string,
-        lastName: formData.get("lastName") as string,
-        responsableId: user.id,
+        firstname: formData.get("firstName") as string,
+        lastname: formData.get("lastName") as string,
+        responsableid: user.id,
       };
 
       try {
