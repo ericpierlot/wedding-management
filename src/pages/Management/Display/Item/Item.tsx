@@ -51,7 +51,7 @@ const Item = ({ id, value, price, deposit }: BookingDisplay) => {
             }}
           >
             <Text style={{ minWidth: 100 }}>Deposit</Text>
-            <Text color="lime">-{formattedNumber(deposit)}</Text>
+            <Text color="green">-{formattedNumber(deposit)}</Text>
           </div>
           <div
             style={{

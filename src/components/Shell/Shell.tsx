@@ -1,6 +1,6 @@
 import { useMantineTheme, Text } from "@mantine/core";
 import { useQuery } from "react-query";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Guests from "../../pages/Guests/Guests";
 import ManagementDetails from "../../pages/Management/Details";
 import Management, { fetchData } from "../../pages/Management/Management";
@@ -11,12 +11,15 @@ import ToggleScheme from "../ToggleScheme";
 const HeaderApp = () => {
   const { data } = useQuery(["booking"], fetchData);
   const { data: nbGuests } = useQuery(["guests"], getLengthOfGuests);
-  console.log(nbGuests);
+  const navigate = useNavigate();
   const total = data?.reduce((acc, curr) => acc + curr.price, 0) ?? 0;
   const totalRemaining =
     data?.reduce((acc, curr) => acc + curr.deposit, 0) ?? 0;
 
   const theme = useMantineTheme();
+
+  const navigateToGuests = () => navigate("/guests");
+
   return (
     <header
       style={{
@@ -32,11 +35,16 @@ const HeaderApp = () => {
       }}
     >
       <Navigation />
-      <Text color="teal" weight="bold">
+      <Text
+        color="teal"
+        weight="bold"
+        onClick={navigateToGuests}
+        style={{ cursor: "pointer" }}
+      >
         {nbGuests} {nbGuests && nbGuests > 1 ? "guests" : "guest"}
       </Text>
       <div>
-        <Text component="div" color="lime" weight="bold">
+        <Text component="div" color="green" weight="bold">
           {formattedNumber(totalRemaining)}
         </Text>
         <Text

@@ -2,11 +2,13 @@ import { GuestInterface } from "../pages/Guests/Display/Item/Item";
 import { Admin } from "../pages/Guests/Guests";
 import { supabase } from "../services/supabaseClient";
 
-export const formattedNumber = (number: number) =>
-  new Intl.NumberFormat("en-US", {
+export const formattedNumber = (number: number | undefined) => {
+  if (!number) return null;
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "THB",
   }).format(number);
+};
 
 export const uploadImageToSupabaseStorage = async (fileObject: File) => {
   try {

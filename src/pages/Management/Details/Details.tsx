@@ -7,6 +7,7 @@ import {
   Text,
   Group,
   ActionIcon,
+  LoadingOverlay,
 } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 import { useEffect, useState } from "react";
@@ -62,7 +63,9 @@ const ManagementDetails = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const modals = useModals();
-  const { data } = useQuery(["booking", id], () => getBookingId(Number(id)));
+  const { data, isLoading } = useQuery(["booking", id], () =>
+    getBookingId(Number(id))
+  );
   const navigate = useNavigate();
   const [urlFile, setUrlFile] = useState<string | undefined>("");
   const { mutateAsync: deleteBooking } = useMutation(
@@ -152,7 +155,7 @@ const ManagementDetails = () => {
       onClose: () => modals.closeModal(deleteModal),
     });
   };
-
+  const remaining = Number(data?.price) - Number(data?.deposit);
   return (
     <div
       style={{
@@ -163,7 +166,13 @@ const ManagementDetails = () => {
       }}
     >
       <ScrollArea style={{ height: "calc(100vh - 140px)" }}>
-        <Paper padding="md" shadow="xs" withBorder>
+        <Paper
+          padding="md"
+          shadow="xs"
+          withBorder
+          style={{ position: "relative" }}
+        >
+          <LoadingOverlay visible={isLoading} />
           <Group direction="column" grow>
             <Group position="apart">
               <Text>{data?.value}</Text>
@@ -177,10 +186,15 @@ const ManagementDetails = () => {
               </ActionIcon>
             </Group>
 
-            <Text>{formattedNumber(data?.price ?? 0)}</Text>
-            <Text>{formattedNumber(data?.deposit ?? 0)}</Text>
+            <Text>{formattedNumber(data?.price)}</Text>
+            <Text color="green">-{formattedNumber(data?.deposit)}</Text>
+            <Text color="red">{formattedNumber(remaining)}</Text>
             {data?.attachFile_url && (
-              <Button color="teal" onClick={openAttachFileModal}>
+              <Button
+                color="teal"
+                onClick={openAttachFileModal}
+                disabled={!hasAccess}
+              >
                 See picture details
               </Button>
             )}

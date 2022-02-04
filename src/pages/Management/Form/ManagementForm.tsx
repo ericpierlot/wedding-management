@@ -5,6 +5,7 @@ import {
   TextInput,
   Modal,
   Input,
+  Tooltip,
 } from "@mantine/core";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { FaPiggyBank } from "react-icons/fa";
@@ -102,13 +103,7 @@ const ManagementForm = () => {
 
   return (
     <div style={{ padding: 12 }}>
-      <Button
-        onClick={toggleCollapse}
-        color="red"
-        variant="filled"
-        fullWidth
-        disabled={!hasAccess}
-      >
+      <Button onClick={toggleCollapse} color="red" variant="filled" fullWidth>
         Add
       </Button>
       <Modal opened={collapsed} onClose={toggleCollapse} title="">
@@ -150,10 +145,17 @@ const ManagementForm = () => {
               name="attachFile_url"
               onChange={onChangeAttachFile}
             />
-
-            <Button type="submit" color="red" loading={isLoading}>
-              Add
-            </Button>
+            <Tooltip label="You don't have the rights" withArrow>
+              <Button
+                type="submit"
+                color="red"
+                loading={isLoading}
+                disabled={!hasAccess}
+                fullWidth
+              >
+                Add
+              </Button>
+            </Tooltip>
           </Group>
         </form>
       </Modal>
