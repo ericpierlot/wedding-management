@@ -11,7 +11,7 @@ import { FaPiggyBank } from "react-icons/fa";
 import { useMutation, useQueryClient } from "react-query";
 import useUser from "../../../hooks/useUser";
 import { supabase } from "../../../services/supabaseClient";
-import { getUser, uploadImageToSupabaseStorage } from "../../../utils";
+import { uploadImageToSupabaseStorage } from "../../../utils";
 import { Booking } from "../Management";
 
 type BookingPost = Omit<Booking, "created_at" | "id" | "ownerid">;

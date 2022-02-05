@@ -93,6 +93,7 @@ const Shell = () => {
   const { user } = useUser();
   return (
     <div
+      className="app"
       style={{
         display: "flex",
         flexDirection: "column",

@@ -11,3 +11,12 @@
 /* .table tbody tr:hover {
     background-color: red !important;
   } */
+
+@media screen and (min-width: 900px) {
+  .app {
+    display: flex !important;
+    justify-content: center !important;
+    margin: auto;
+    max-width: 500px;
+  }
+}
