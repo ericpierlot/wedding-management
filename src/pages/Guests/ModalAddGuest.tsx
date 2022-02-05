@@ -1,9 +1,9 @@
-import { Button, Group, TextInput, Tooltip } from "@mantine/core";
+import { Button, Group, TextInput } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 import { FormEvent } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { supabase } from "../../services/supabaseClient";
-import { getUser, usePermission } from "../../utils";
+import { getUser } from "../../utils";
 import { GuestInterface } from "./Display/Item/Item";
 import { Admin } from "./Guests";
 
@@ -18,7 +18,7 @@ const supabasePostGuest = async (fields: AddGuestFields) => {
 
 const ModalAddGuest = () => {
   const user = getUser();
-  const hasAccess = usePermission();
+
   const modals = useModals();
   const queryClient = useQueryClient();
   const { mutateAsync, isLoading } = useMutation(supabasePostGuest, {
@@ -66,17 +66,9 @@ const ModalAddGuest = () => {
           >
             Cancel
           </Button>
-          <Tooltip label="You are not allowed to add guest" withArrow>
-            <Button
-              type="submit"
-              color="red"
-              loading={isLoading}
-              disabled={!hasAccess}
-              fullWidth
-            >
-              Add
-            </Button>
-          </Tooltip>
+          <Button type="submit" color="red" loading={isLoading} fullWidth>
+            Add
+          </Button>
         </Group>
       </Group>
     </form>

@@ -5,20 +5,16 @@ import {
   TextInput,
   Modal,
   Input,
-  Tooltip,
 } from "@mantine/core";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { FaPiggyBank } from "react-icons/fa";
 import { useMutation, useQueryClient } from "react-query";
+import useUser from "../../../hooks/useUser";
 import { supabase } from "../../../services/supabaseClient";
-import {
-  getUser,
-  uploadImageToSupabaseStorage,
-  usePermission,
-} from "../../../utils";
+import { getUser, uploadImageToSupabaseStorage } from "../../../utils";
 import { Booking } from "../Management";
 
-type BookingPost = Omit<Booking, "created_at" | "id">;
+type BookingPost = Omit<Booking, "created_at" | "id" | "ownerid">;
 
 const supabasePostBooking = async (fields: BookingPost) => {
   await supabase.from("Booking").insert(fields);
@@ -29,7 +25,7 @@ export const removeAttachFileFromStorage = async (path: string) => {
 };
 
 const ManagementForm = () => {
-  const hasAccess = usePermission();
+  const { user } = useUser();
   const { mutateAsync, isLoading } = useMutation(supabasePostBooking, {
     mutationKey: ["booking"],
   });
@@ -47,6 +43,7 @@ const ManagementForm = () => {
     const formData = new FormData(e.currentTarget);
 
     let attachFile_url: string | null = null;
+    console.log(file);
     if (file) {
       attachFile_url = await uploadImageToSupabaseStorage(
         formData.get("attachFile_url") as File
@@ -58,6 +55,7 @@ const ManagementForm = () => {
       price: price ?? 0,
       deposit: deposit ?? 0,
       attachFile_url,
+      ownerid: user && user.id,
     };
 
     try {
@@ -71,10 +69,6 @@ const ManagementForm = () => {
           }
         },
         onSettled: () => {
-          const user = getUser()?.email;
-          if (!user) {
-            return;
-          }
           toggleCollapse();
         },
       });
@@ -145,17 +139,9 @@ const ManagementForm = () => {
               name="attachFile_url"
               onChange={onChangeAttachFile}
             />
-            <Tooltip label="You don't have the rights" withArrow>
-              <Button
-                type="submit"
-                color="red"
-                loading={isLoading}
-                disabled={!hasAccess}
-                fullWidth
-              >
-                Add
-              </Button>
-            </Tooltip>
+            <Button type="submit" color="red" loading={isLoading} fullWidth>
+              Add
+            </Button>
           </Group>
         </form>
       </Modal>

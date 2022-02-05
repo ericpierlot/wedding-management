@@ -4,14 +4,17 @@ import { formattedNumber } from "../../../../utils";
 import { Booking } from "../../Management";
 import { useStyles } from "./Item.style";
 
-type BookingDisplay = Omit<Booking, "attachFile_url" | "created_at">;
+type BookingDisplay = Omit<
+  Booking,
+  "attachFile_url" | "created_at" | "ownerid"
+>;
 
 const Item = ({ id, value, price, deposit }: BookingDisplay) => {
   const { classes } = useStyles();
   const navigate = useNavigate();
 
   const goToDetails = (bookingId: number) => {
-    navigate(`/booking/${bookingId}`);
+    navigate(`/finance/${bookingId}`);
   };
 
   return (

@@ -15,7 +15,7 @@ export interface ModalEditingProps {
   deposit: number;
 }
 
-type BookingEditProps = Omit<Booking, "created_at">;
+type BookingEditProps = Omit<Booking, "created_at" | "ownerid">;
 const supabaseEditBooking = async ({
   id,
   value,

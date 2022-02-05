@@ -10,7 +10,7 @@ const Search = ({ data }: { data: Booking[] }) => {
 
   const onSubmit = (item: AutocompleteItem) => {
     const { id } = item;
-    navigate(`/booking/${id}`);
+    navigate(`/finance/${id}`);
   };
 
   return (

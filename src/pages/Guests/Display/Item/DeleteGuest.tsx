@@ -3,7 +3,6 @@ import { supabase } from "../../../../services/supabaseClient";
 import { GuestInterface } from "./Item";
 import { ActionIcon } from "@mantine/core";
 import { MdClose } from "react-icons/md";
-import { usePermission } from "../../../../utils";
 
 const deleteBookingId = async (id: number) => {
   try {
@@ -14,7 +13,6 @@ const deleteBookingId = async (id: number) => {
 };
 
 const DeleteGuest = ({ id }: Pick<GuestInterface, "id">) => {
-  const hasAccess = usePermission();
   const queryClient = useQueryClient();
   const { mutateAsync } = useMutation(deleteBookingId, {
     mutationKey: ["guest", id],
@@ -28,12 +26,7 @@ const DeleteGuest = ({ id }: Pick<GuestInterface, "id">) => {
   };
 
   return (
-    <ActionIcon
-      color="red"
-      variant="light"
-      onClick={deleteGuest}
-      disabled={!hasAccess}
-    >
+    <ActionIcon color="red" variant="light" onClick={deleteGuest}>
       <MdClose />
     </ActionIcon>
   );

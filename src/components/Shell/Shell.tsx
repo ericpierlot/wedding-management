@@ -1,15 +1,24 @@
 import { useMantineTheme, Text } from "@mantine/core";
 import { useQuery } from "react-query";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import useUser from "../../hooks/useUser";
 import Guests from "../../pages/Guests/Guests";
+import Home from "../../pages/Home";
 import ManagementDetails from "../../pages/Management/Details";
-import Management, { fetchData } from "../../pages/Management/Management";
-import { formattedNumber, getLengthOfGuests } from "../../utils";
+import Management from "../../pages/Management/Management";
+import {
+  fetchBookingOwner,
+  formattedNumber,
+  getLengthOfGuests,
+} from "../../utils";
 import Navigation from "../Navigation";
 import ToggleScheme from "../ToggleScheme";
 
 const HeaderApp = () => {
-  const { data } = useQuery(["booking"], fetchData);
+  const { user } = useUser();
+  const { data } = useQuery(["booking"], () =>
+    fetchBookingOwner(user && user.id)
+  );
   const { data: nbGuests } = useQuery(["guests"], getLengthOfGuests);
   const navigate = useNavigate();
   const total = data?.reduce((acc, curr) => acc + curr.price, 0) ?? 0;
@@ -60,16 +69,28 @@ const HeaderApp = () => {
   );
 };
 const Router = () => {
+  const { user } = useUser();
   return (
     <Routes>
-      <Route path="/" element={<Management />} />
-      <Route path="/guests" element={<Guests />} />
-      <Route path="/booking/:id" element={<ManagementDetails />} />
+      <Route
+        path="/"
+        element={user ? <Navigate replace to="/finance" /> : <Home />}
+      />
+      {!user && <Route path="/" element={<Home />} />}
+      {user && (
+        <>
+          <Route path="/finance" element={<Management />} />
+          <Route path="/guests" element={<Guests />} />
+          <Route path="/finance/:id" element={<ManagementDetails />} />
+        </>
+      )}
+      <Route path="*" element={<Navigate replace to="/" />} />
     </Routes>
   );
 };
 
 const Shell = () => {
+  const { user } = useUser();
   return (
     <div
       style={{
@@ -78,7 +99,7 @@ const Shell = () => {
         minHeight: "100vh",
       }}
     >
-      <HeaderApp />
+      {user && <HeaderApp />}
       <main style={{ flex: 1 }}>
         <Router />
       </main>

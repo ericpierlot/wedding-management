@@ -15,7 +15,7 @@ import { MdDelete } from "react-icons/md";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../../../services/supabaseClient";
-import { formattedNumber, usePermission } from "../../../utils";
+import { formattedNumber } from "../../../utils";
 import ModalEditing, { ModalEditingProps } from "../Display/ModalEditing";
 import { removeAttachFileFromStorage } from "../Form/ManagementForm";
 import { Booking } from "../Management";
@@ -33,7 +33,6 @@ const getBookingId = async (id: number | undefined) => {
 const deleteBookingId = async (data: Booking) => {
   const { id, attachFile_url } = data;
   try {
-    console.log("attachFile_url", attachFile_url);
     if (attachFile_url) {
       await removeAttachFileFromStorage(attachFile_url);
     }
@@ -59,7 +58,6 @@ async function downloadImage(path: string) {
 }
 
 const ManagementDetails = () => {
-  const hasAccess = usePermission();
   const { id } = useParams();
   const queryClient = useQueryClient();
   const modals = useModals();
@@ -119,7 +117,7 @@ const ManagementDetails = () => {
     await deleteBooking(booking, {
       onSuccess: () => {
         modals.closeModal("delete-booking");
-        navigate("/");
+        navigate("/finance");
       },
     });
   };
@@ -180,7 +178,6 @@ const ManagementDetails = () => {
                 color="red"
                 variant="light"
                 onClick={() => data && handleOpenDeleteModal()}
-                disabled={!hasAccess}
               >
                 <MdDelete />
               </ActionIcon>
@@ -190,18 +187,13 @@ const ManagementDetails = () => {
             <Text color="green">-{formattedNumber(data?.deposit)}</Text>
             <Text color="red">{formattedNumber(remaining)}</Text>
             {data?.attachFile_url && (
-              <Button
-                color="teal"
-                onClick={openAttachFileModal}
-                disabled={!hasAccess}
-              >
+              <Button color="teal" onClick={openAttachFileModal}>
                 See picture details
               </Button>
             )}
             <Button
               color="red"
               onClick={() => data && openEditModal({ ...data })}
-              disabled={!hasAccess}
             >
               Edit
             </Button>

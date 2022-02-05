@@ -2,7 +2,9 @@ import { Button, Group } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
+
 import { supabase } from "../../services/supabaseClient";
+import { getUser } from "../../utils";
 import ListOfGuests from "./Display";
 import { GuestInterface } from "./Display/Item/Item";
 import ModalAddGuest from "./ModalAddGuest";
@@ -20,6 +22,7 @@ const getListOfGuests = async () => {
 
 const Guests = () => {
   const modals = useModals();
+  const user = getUser();
   const { data } = useQuery(["guest"], getListOfGuests);
 
   const EricGuests = data?.filter(
@@ -47,7 +50,12 @@ const Guests = () => {
         gap: "12px",
       }}
     >
-      <Button color="red" fullWidth onClick={openAddGuestModal}>
+      <Button
+        color="red"
+        fullWidth
+        onClick={openAddGuestModal}
+        disabled={!(user?.id === Admin.ERIC || user?.id === Admin.NATTANICHA)}
+      >
         Add a guest
       </Button>
       <Group direction="column" spacing={32} grow>

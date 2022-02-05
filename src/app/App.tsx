@@ -8,9 +8,10 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import Shell from "../components/Shell";
-import "./App.css";
+import UserProvider from "../provider/UserProvider";
 
 const queryClient = new QueryClient();
+
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("dark");
   const toggleColorScheme = (value?: ColorScheme) =>
@@ -26,11 +27,13 @@ function App() {
         withGlobalStyles
         withNormalizeCSS
       >
-        <QueryClientProvider client={queryClient}>
-          <ModalsProvider>
-            <Shell />
-          </ModalsProvider>
-        </QueryClientProvider>
+        <UserProvider>
+          <QueryClientProvider client={queryClient}>
+            <ModalsProvider>
+              <Shell />
+            </ModalsProvider>
+          </QueryClientProvider>
+        </UserProvider>
       </MantineProvider>
     </ColorSchemeProvider>
   );
