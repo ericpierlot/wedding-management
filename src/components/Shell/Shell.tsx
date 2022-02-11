@@ -22,8 +22,9 @@ const HeaderApp = () => {
   const { data: nbGuests } = useQuery(["guests"], getLengthOfGuests);
   const navigate = useNavigate();
   const total = data?.reduce((acc, curr) => acc + curr.price, 0) ?? 0;
-  const totalRemaining =
-    data?.reduce((acc, curr) => acc + curr.deposit, 0) ?? 0;
+  const totalDeposit = data?.reduce((acc, curr) => acc + curr.deposit, 0) ?? 0;
+
+  const totalRemaining = total - totalDeposit;
 
   const theme = useMantineTheme();
 
@@ -53,15 +54,12 @@ const HeaderApp = () => {
         {nbGuests} {nbGuests && nbGuests > 1 ? "guests" : "guest"}
       </Text>
       <div>
-        <Text component="div" color="green" weight="bold">
-          {formattedNumber(totalRemaining)}
-        </Text>
         <Text
           component="span"
           weight="bold"
           color={theme.colorScheme === "dark" ? "red" : "dark"}
         >
-          {formattedNumber(total)}
+          {formattedNumber(totalRemaining)}
         </Text>
       </div>
       <ToggleScheme />
