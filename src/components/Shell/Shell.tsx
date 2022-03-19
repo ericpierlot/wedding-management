@@ -54,6 +54,9 @@ const HeaderApp = () => {
         {nbGuests} {nbGuests && nbGuests > 1 ? "guests" : "guest"}
       </Text>
       <div>
+        <Text component="span" weight="bold">
+          {formattedNumber(total)}
+        </Text>
         <Text
           component="span"
           weight="bold"
